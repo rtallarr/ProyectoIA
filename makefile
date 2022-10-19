@@ -1,11 +1,12 @@
 CC = g++
 CFLAGS = -Wall -g
 NOMBRE = proyecto
+DEPS = main.o funciones.o nodos.o
 
 all: $(NOMBRE)
 
-$(NOMBRE): main.o funciones.o
-	$(CC) $(CFLAGS) -o $(NOMBRE) main.o funciones.o 
+$(NOMBRE): $(DEPS)
+	$(CC) $(CFLAGS) -o $(NOMBRE) $(DEPS)
 	./proyecto
 
 %.o: %.c
@@ -13,4 +14,4 @@ $(NOMBRE): main.o funciones.o
 
 clean:
 	rm -f proyecto
-	rm *.o
+	rm -f *.o
