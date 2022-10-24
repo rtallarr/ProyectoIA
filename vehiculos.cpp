@@ -49,11 +49,8 @@ void vehiculo::set_pos(float x, float y) {
 }
 
 float vehiculo::dist(nodo uno) {
-    //cout << "X: " << uno.coordX << " Y: " << uno.coordY << endl;
-    //cout << "X: " << posicion.at(0) << " Y: " << posicion.at(1) << endl;
     int xs = pow(uno.coordX - posicion.at(0), 2);
     int ys = pow(uno.coordY - posicion.at(1), 2);
-    //cout << "xs: " << xs << " ys: " << ys << endl;
     float distancia = sqrt(xs + ys);
     return distancia;
 }

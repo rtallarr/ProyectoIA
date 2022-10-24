@@ -39,7 +39,7 @@ int main() { //cambiar a otro archivo que genera una solucion para un archivo.
         if (id != 0) {
             cout << id;
         }
-        nodos.at(i).demanda = d;
+        nodos.at(i).set_d(d);
         //cout << nodos.at(i).demanda;
     }
 
@@ -47,11 +47,9 @@ int main() { //cambiar a otro archivo que genera una solucion para un archivo.
     for(int i = 1; i <= cant; ++i) {
         vehiculo v = vehiculo(i, cap);
         vehiculos.push_back(v);
-        v.set_pos(nodos.at(0).coordX, nodos.at(0).coordY); //pos inicial = depot
+        vehiculos.at(i-1).set_pos(nodos.at(0).coordX, nodos.at(0).coordY); //pos inicial = depot
         //v.print();
     }
-
-    vehiculos.at(0).print();
 
     //nodos disponibles para visitar
     vector<int> nodos_disp;
@@ -90,7 +88,7 @@ int main() { //cambiar a otro archivo que genera una solucion para un archivo.
         vehiculos.at(j).add_peso(nodos.at(numero_nodo_min-1).demanda);
         vehiculos.at(j).set_pos(nodos.at(numero_nodo_min-1).coordX, nodos.at(numero_nodo_min-1).coordY);
         vehiculos.at(j).add_dist(nodos.at(j).dist(nodos.at(numero_nodo_min-1)));
-        //vehiculos.at(j).print();
+        vehiculos.at(j).print();
     }
 
     return 0;

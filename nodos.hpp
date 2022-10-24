@@ -11,4 +11,5 @@ class nodo {
         //metodos
         void print();
         float dist(nodo);
+        void set_d(int);
 };

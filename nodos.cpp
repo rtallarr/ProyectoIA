@@ -34,3 +34,7 @@ float nodo::dist(nodo uno) {
     float distancia = sqrt(xs + ys);
     return distancia;
 }
+
+void nodo::set_d(int d) {
+    demanda = d;
+}
