@@ -4,9 +4,11 @@ class nodo {
         int id;
         float coordX;
         float coordY;
+        float demanda;
 
         nodo(int, int, float, float); //constructor
         
         //metodos
-        void print(); 
+        void print();
+        float dist(nodo);
 };
