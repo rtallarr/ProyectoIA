@@ -8,17 +8,17 @@
 
 using namespace std;
 
-int main(int argc, char** argv) { //cambiar a otro archivo que genera una solucion para un archivo.
+int main() { //cambiar a otro archivo que genera una solucion para un archivo.
     int id, t, n;
     float x, y;
     vector<nodo> nodos; //lista de todos los nodos
     vector<vehiculo> vehiculos; //lista de autos
 
-    ifstream file(argv[1]);
+    ifstream file("GA1.txt");
 
     //leer numero de nodos
     file >> n;
-    cout << "N nodos: " << n << "\n";
+    //cout << "N nodos: " << n << "\n";
 
     //asignar cada dato de cada nodo (sin demanda)
     for(int i = 0; i < n; ++i){
@@ -31,7 +31,8 @@ int main(int argc, char** argv) { //cambiar a otro archivo que genera una soluci
     int cap, cant;
     float d;
     file >> cant >> cap;
-    cout << "Cant Vehiculos: " << cant << " Capacidad: " << cap << endl;
+    //cout << "Cant Vehiculos: " << cant << " Capacidad: " << cap << endl;
+    
     //asignar demanda a cada nodo ¿?¿?¿?¿?
     for(int i = 1; i < n; ++i) { //id 1 => depot
         file >> id >> d;
@@ -46,23 +47,51 @@ int main(int argc, char** argv) { //cambiar a otro archivo que genera una soluci
     for(int i = 1; i <= cant; ++i) {
         vehiculo v = vehiculo(i, cap);
         vehiculos.push_back(v);
+        v.set_pos(nodos.at(0).coordX, nodos.at(0).coordY); //pos inicial = depot
         //v.print();
     }
 
+    vehiculos.at(0).print();
 
-    float min = 9999999999;
-    int numero_nodo_min; //indice del mas cercano
-    for(int i = 1; i < n; ++i) {
-        float d = nodos.at(0).dist(nodos.at(i));
-        //nodos.at(i).print();
-        if(d < min) {
-            min = d;
-            numero_nodo_min = i+1;
-        }
+    //nodos disponibles para visitar
+    vector<int> nodos_disp;
+    for(int i = 0; i < n; ++i) {
+        nodos_disp.push_back(i);
     }
 
-    //cout << "min: " << min << "\n"
-    //<< "numero nodo: " << numero_nodo_min;
+    //calcular el linehaul mas cercano al depot
+    float min = 9999999999;
+    int numero_nodo_min; //indice del mas cercano
+    for(int j = 0; j < 1; ++j) {
+        for(int i = 0; i < nodos_disp.size(); ++i) {
+            float d = vehiculos.at(j).dist(nodos.at(i));
+            //cout << "I: " << i << " J: " << j << " d: " << d << endl;
+            if (d != 0){
+                if (vehiculos.at(j).ruta.empty()) { //ruta vacia siosi parte con linehaul
+                    if (nodos.at(i).tipo == 1) {
+                        if(d < min) {
+                            min = d;
+                            numero_nodo_min = i+1;
+                            //cout << "N nodo: " << numero_nodo_min << endl;
+                        }
+                    }
+                } else {
+                    if(d < min) {
+                        min = d;
+                        numero_nodo_min = i+1;
+                        //cout << "N nodo: " << numero_nodo_min << endl;
+                    }
+                }
+            }
+        }
+        cout << "min: " << min << " N nodo: " << numero_nodo_min << endl;
+
+        vehiculos.at(j).add_ruta(numero_nodo_min);
+        vehiculos.at(j).add_peso(nodos.at(numero_nodo_min-1).demanda);
+        vehiculos.at(j).set_pos(nodos.at(numero_nodo_min-1).coordX, nodos.at(numero_nodo_min-1).coordY);
+        vehiculos.at(j).add_dist(nodos.at(j).dist(nodos.at(numero_nodo_min-1)));
+        //vehiculos.at(j).print();
+    }
 
     return 0;
 }
