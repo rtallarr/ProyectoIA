@@ -45,6 +45,8 @@ int main() { //cambiar a otro archivo que genera una solucion para un archivo.
         //cout << nodos.at(i).demanda;
     }
 
+    file.close();
+
     //crear vehiculos
     for(int i = 1; i <= cant; ++i) {
         vehiculo v = vehiculo(i, cap);
@@ -65,6 +67,7 @@ int main() { //cambiar a otro archivo que genera una solucion para un archivo.
     //=========================GREEDY=======================================
     for(int j = 0; j < cant; ++j) {                         //para cada auto
         bool fin = false;
+        bool recorriendo_backhauls = false;
         while (!fin) {                                      //mientras no termine el recorrido
         float min = 9999999999;
         int numero_nodo_min;
@@ -79,10 +82,32 @@ int main() { //cambiar a otro archivo que genera una solucion para un archivo.
                                 numero_nodo_min = nodos_disp.at(i);
                             }
                         }
-                    } else {
-                        if(d < min && not_in(nodos_disp.at(i), nodos_visitados)) {
-                            min = d;
-                            numero_nodo_min = nodos_disp.at(i);
+                    } else { //no anotar un linehaul dps de un backhaul
+                        if (nodos.at(i).tipo == 1) {
+                            if (!recorriendo_backhauls) {
+                                if (d < min && not_in(nodos_disp.at(i), nodos_visitados)) {
+                                    min = d;
+                                    numero_nodo_min = nodos_disp.at(i);
+                                }
+                            }
+                        } else if (nodos.at(i).tipo == 2) {
+                            if (!recorriendo_backhauls) {
+                                if (d < min && not_in(nodos_disp.at(i), nodos_visitados)) {
+                                    min = d;
+                                    numero_nodo_min = nodos_disp.at(i);
+                                    recorriendo_backhauls = true;
+                                }
+                            } else {
+                                if (d < min && not_in(nodos_disp.at(i), nodos_visitados)) {
+                                    min = d;
+                                    numero_nodo_min = nodos_disp.at(i);
+                                }
+                            }
+                        } else { //deposito
+                            if (d < min && not_in(nodos_disp.at(i), nodos_visitados)) {
+                                min = d;
+                                numero_nodo_min = nodos_disp.at(i);
+                            }
                         }
                     }
                 }
@@ -107,7 +132,22 @@ int main() { //cambiar a otro archivo que genera una solucion para un archivo.
         }
         vehiculos.at(j).print();
     }
-    //=========================GREEDY=======================================
+    //================================================================
+
+
+    //========================OUTPUT======================================
+    float distancia_total;
+    int nClientes;
+    int nVehiculos;
+
+    //ofstream out("soluciones/test.out");
+
+    //out << vehiculos.at(0).distancia_recorrida;
+    //out << calidad << ncClientes << nVehiculos << tiempo;
+    //for i in vehiculos
+    //    print(ruta), distancia, demandaL, demandaB
+
+    //out.close();
 
     return 0;
 }

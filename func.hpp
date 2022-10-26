@@ -1,4 +1,8 @@
 #include <vector>
+#include <iostream>
+#include <fstream>
+
+using namespace std;
 
 bool not_in(int x, vector<int> n) {
     for (int i = 0; i < n.size(); ++i) {

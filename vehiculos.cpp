@@ -55,22 +55,22 @@ float vehiculo::dist(nodo uno) {
     return distancia;
 }
 
-bool vehiculo::recorrido_terminado() {
-    if (ruta.empty()) {
-        //cout << "FALSE";
-        return false;
-    } else {
-        if (ruta.at(ruta.size() - 1) == 1) {
-            //cout << "TRUE";
-            return true;
-        } else {
-            //cout << "FALSE";
-            return false;
-        }
-    }
-}
+//bool vehiculo::recorrido_terminado() {
+//    if (ruta.empty()) {
+//        //cout << "FALSE";
+//        return false;
+//    } else {
+//        if (ruta.at(ruta.size() - 1) == 1) {
+//            //cout << "TRUE";
+//            return true;
+//        } else {
+//            //cout << "FALSE";
+//            return false;
+//        }
+//    }
+//}
 
-bool vehiculo::recorrido_terminados() {
+bool vehiculo::recorrido_terminado() {
     if (ruta.at(ruta.size() - 1) == 1 || ruta.empty()) {
         return true;
     } else {

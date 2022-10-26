@@ -21,5 +21,5 @@ class vehiculo {
         void add_dist(float d);
         float dist(nodo uno);
         bool recorrido_terminado();
-        bool recorrido_terminados();
+        bool recorriendo_backhauls();
 };
