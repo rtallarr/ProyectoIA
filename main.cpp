@@ -5,14 +5,15 @@
 
 #include "nodos.hpp"
 #include "vehiculos.hpp"
+#include "func.hpp"
 
 using namespace std;
 
 int main() { //cambiar a otro archivo que genera una solucion para un archivo.
     int id, t, n;
     float x, y;
-    vector<nodo> nodos; //lista de todos los nodos
-    vector<vehiculo> vehiculos; //lista de autos
+    vector<nodo> nodos;             //lista de todos los nodos
+    vector<vehiculo> vehiculos;     //lista de autos
 
     ifstream file("GA1.txt");
 
@@ -29,15 +30,16 @@ int main() { //cambiar a otro archivo que genera una solucion para un archivo.
     }
 
     int cap, cant;
+    int otro_id;
     float d;
     file >> cant >> cap;
     //cout << "Cant Vehiculos: " << cant << " Capacidad: " << cap << endl;
     
     //asignar demanda a cada nodo ¿?¿?¿?¿?
     for(int i = 1; i < n; ++i) { //id 1 => depot
-        file >> id >> d;
-        if (id != 0) {
-            cout << id;
+        file >> otro_id >> d;
+        if (otro_id != 0) {
+            cout << otro_id;
         }
         nodos.at(i).set_d(d);
         //cout << nodos.at(i).demanda;
@@ -51,45 +53,61 @@ int main() { //cambiar a otro archivo que genera una solucion para un archivo.
         //v.print();
     }
 
-    //nodos disponibles para visitar
+    //numeros de los nodos
     vector<int> nodos_disp;
-    for(int i = 0; i < n; ++i) {
+    for(int i = 1; i <= n; ++i) {
         nodos_disp.push_back(i);
     }
 
-    //calcular el linehaul mas cercano al depot
-    float min = 9999999999;
-    int numero_nodo_min; //indice del mas cercano
-    for(int j = 0; j < 1; ++j) {
-        for(int i = 0; i < nodos_disp.size(); ++i) {
-            float d = vehiculos.at(j).dist(nodos.at(i));
-            //cout << "I: " << i << " J: " << j << " d: " << d << endl;
-            if (d != 0){
-                if (vehiculos.at(j).ruta.empty()) { //ruta vacia siosi parte con linehaul
-                    if (nodos.at(i).tipo == 1) {
-                        if(d < min) {
-                            min = d;
-                            numero_nodo_min = i+1;
-                            //cout << "N nodo: " << numero_nodo_min << endl;
+    vector<int> nodos_visitados;
+
+    //calcular ruta de cada vehiculo
+    //=========================GREEDY=======================================
+    for(int j = 0; j < cant; ++j) {                         //para cada auto
+        bool fin = false;
+        while (!fin) {                                      //mientras no termine el recorrido
+        float min = 9999999999;
+        int numero_nodo_min;
+            for(int i = 0; i < nodos_disp.size(); ++i) {    //recorrer cada nodo
+                float d = vehiculos.at(j).dist(nodos.at(i));
+                //cout << "I: " << i << " J: " << j << " d: " << d << endl;
+                if (d != 0){
+                    if (vehiculos.at(j).ruta.empty()) { //ruta vacia siosi parte con linehaul
+                        if (nodos.at(i).tipo == 1) {
+                            if(d < min && not_in(nodos_disp.at(i), nodos_visitados)) {
+                                min = d;
+                                numero_nodo_min = nodos_disp.at(i);
+                            }
                         }
-                    }
-                } else {
-                    if(d < min) {
-                        min = d;
-                        numero_nodo_min = i+1;
-                        //cout << "N nodo: " << numero_nodo_min << endl;
+                    } else {
+                        if(d < min && not_in(nodos_disp.at(i), nodos_visitados)) {
+                            min = d;
+                            numero_nodo_min = nodos_disp.at(i);
+                        }
                     }
                 }
             }
-        }
-        cout << "min: " << min << " N nodo: " << numero_nodo_min << endl;
+            //cout << "min: " << min << " N nodo: " << numero_nodo_min << endl;
+            if (min == 9999999999) { //no quedan nodos disponibles
+                fin = true;
+            } else {
+                if (numero_nodo_min != 1) { //siempre se puede volver al deposito
+                    nodos_visitados.push_back(numero_nodo_min);
+                }
 
-        vehiculos.at(j).add_ruta(numero_nodo_min);
-        vehiculos.at(j).add_peso(nodos.at(numero_nodo_min-1).demanda);
-        vehiculos.at(j).set_pos(nodos.at(numero_nodo_min-1).coordX, nodos.at(numero_nodo_min-1).coordY);
-        vehiculos.at(j).add_dist(nodos.at(j).dist(nodos.at(numero_nodo_min-1)));
+                vehiculos.at(j).add_ruta(numero_nodo_min);
+                vehiculos.at(j).add_peso(nodos.at(numero_nodo_min-1).demanda);
+                vehiculos.at(j).set_pos(nodos.at(numero_nodo_min-1).coordX, nodos.at(numero_nodo_min-1).coordY);
+                vehiculos.at(j).add_dist(min);
+                //vehiculos.at(j).print();
+
+                fin = vehiculos.at(j).recorrido_terminado();
+                //fin = true;
+            }
+        }
         vehiculos.at(j).print();
     }
+    //=========================GREEDY=======================================
 
     return 0;
 }

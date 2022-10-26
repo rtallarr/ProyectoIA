@@ -20,4 +20,6 @@ class vehiculo {
         void set_pos(float x, float y);
         void add_dist(float d);
         float dist(nodo uno);
+        bool recorrido_terminado();
+        bool recorrido_terminados();
 };
