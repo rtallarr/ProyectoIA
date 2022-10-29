@@ -9,13 +9,13 @@
 
 using namespace std;
 
-int main() { //cambiar a otro archivo que genera una solucion para un archivo.
+int main(int argc, char *argv[]) { //cambiar a otro archivo que genera una solucion para un archivo.
     int id, t, n;
     float x, y;
     vector<nodo> nodos;             //lista de todos los nodos
     vector<vehiculo> vehiculos;     //lista de autos
 
-    ifstream file("GA1.txt");
+    ifstream file(argv[1]);
 
     //leer numero de nodos
     file >> n;
