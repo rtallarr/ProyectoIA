@@ -1,5 +1,7 @@
 # Proyecto VRPwB
 
+
+## Instrucciones
 Se requiere de una carpeta de nombre `instancias` con los archivos `.txt` adentro ubicada en el mismo directorio.
 
 ### Comandos Makefile
@@ -18,7 +20,13 @@ make sol
 
 
 ### Ejecutar con otra instancia
-Para correr el programa con otra instancia, se pasa como parametro del ejecutable. Por ejemplo para ejecutarlo con instancia/GA4.txt
+Para correr el programa con otra instancia, se pasa como parametro del ejecutable. Por ejemplo para ejecutarlo con la instancia en `instancias/GA4.txt`
 ```
 ./proyecto GA4
 ```
+
+## Pendientes
+- [ ] Bug pesos y demandas
+- [x] Backhauls depues de linehauls
+- [ ] Asegurar pasar por todos los nodos
+- [ ] Tabu search

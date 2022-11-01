@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) { //cambiar a otro archivo que genera una soluc
             for(int i = 0; i < nodos_disp.size(); ++i) {    //recorrer cada nodo
                 float d = vehiculos.at(j).dist(nodos.at(i));
                 //cout << "I: " << i << " J: " << j << " d: " << d << endl;
-                if (d != 0){
+                if (d != 0) {
                     if (vehiculos.at(j).ruta.empty()) { //ruta vacia siosi parte con linehaul
                         if (nodos.at(i).tipo == 1) {
                             if(d < min && not_in(nodos_disp.at(i), nodos_visitados)) {
