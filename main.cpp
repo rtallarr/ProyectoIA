@@ -15,7 +15,8 @@ int main(int argc, char *argv[]) { //cambiar a otro archivo que genera una soluc
     vector<nodo> nodos;             //lista de todos los nodos
     vector<vehiculo> vehiculos;     //lista de autos
 
-    ifstream file(argv[1]);
+    string nombre_archivo = argv[1];
+    ifstream file("instancias/"+nombre_archivo+".txt");
 
     //leer numero de nodos
     file >> n;
@@ -63,7 +64,6 @@ int main(int argc, char *argv[]) { //cambiar a otro archivo que genera una soluc
 
     vector<int> nodos_visitados;
 
-    //calcular ruta de cada vehiculo
     //=========================GREEDY=======================================
     for(int j = 0; j < cant; ++j) {                         //para cada auto
         bool fin = false;
@@ -130,24 +130,43 @@ int main(int argc, char *argv[]) { //cambiar a otro archivo que genera una soluc
                 //fin = true;
             }
         }
-        vehiculos.at(j).print();
+        //vehiculos.at(j).print();
     }
     //================================================================
 
 
     //========================OUTPUT======================================
-    float distancia_total;
-    int nClientes;
-    int nVehiculos;
+    int nClientes = n;
+    int nVehiculos = 0;
+    double tiempo = 0.07;
+    float calidad;
 
-    //ofstream out("soluciones/test.out");
+    for (int i = 0; i < vehiculos.size(); ++i) {
+        calidad += vehiculos.at(i).distancia_recorrida;
+        if (vehiculos.at(i).distancia_recorrida != 0) {
+            nVehiculos += 1;
+        }
+    }
 
-    //out << vehiculos.at(0).distancia_recorrida;
-    //out << calidad << ncClientes << nVehiculos << tiempo;
-    //for i in vehiculos
-    //    print(ruta), distancia, demandaL, demandaB
+    crear_carpeta();
 
-    //out.close();
+    ofstream out("soluciones/"+nombre_archivo+".out");
+
+    out << calidad << " " << to_string(nClientes) << " " << to_string(nVehiculos) << " " << to_string(tiempo) << "\n";
+    for(int i = 0; i < nVehiculos; ++i) {
+        out << "1-";
+        for(int j = 0; j < vehiculos.at(i).ruta.size(); ++j) {
+            out << vehiculos.at(i).ruta.at(j);
+            if (j+1 != vehiculos.at(i).ruta.size()) {
+                out << "-";
+            } else {
+                out << " ";
+            }
+        }
+        out << vehiculos.at(i).distancia_recorrida << " " << "demandaL" << " " << "demandaB\n";
+    }
+
+    out.close();
 
     return 0;
 }

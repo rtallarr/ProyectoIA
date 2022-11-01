@@ -8,7 +8,7 @@ all: $(NOMBRE)
 
 $(NOMBRE): $(DEPS)
 	$(CC) $(CFLAGS) -o $(NOMBRE) $(DEPS)
-	./proyecto GA1.txt
+	./proyecto test
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $<
