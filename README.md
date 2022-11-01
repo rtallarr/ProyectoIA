@@ -1,9 +1,24 @@
-Se asume que existe una carpeta llamada instancias con los archivos txt dentro
-ubicada en este mismo directorio.
+# Proyecto VRPwB
 
-El makefile crea un ejecutable para linux. Con el comando basico make se compilan todos los
-archivos necesarios y se corre el programa con la instancia "GA1" por defecto. Para correr otra instancia
-se debe pasar el nombre del archivo como parametro. Por ejemplo ./proyecto GA4
+Se requiere de una carpeta de nombre `instancias` con los archivos `.txt` adentro ubicada en el mismo directorio.
 
-make sol - elimina la carpeta con las soluciones
-make clean - elimina los archivos compilados.
+### Comandos Makefile
+1. Crea un ejecutable para linux y lo corre con GA1 por defecto.
+```
+make
+```
+2. Elimina el ejecutable y los archivos archivos intermedios creados en la fase de compilación.
+```
+make clean
+```
+3. Elimina la carpeta soluciones y sus contenidos.
+```
+make sol
+```
+
+
+### Ejecutar con otra instancia
+Para correr el programa con otra instancia, se pasa como parametro del ejecutable. Por ejemplo para ejecutarlo con instancia/GA4.txt
+```
+./proyecto GA4
+```
