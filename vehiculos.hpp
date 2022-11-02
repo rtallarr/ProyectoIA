@@ -6,7 +6,8 @@ class vehiculo {
     public:
         int id;
         int capacidad;
-        int peso_actual;
+        int demandaL;
+        int demandaB;
         float distancia_recorrida;
         vector<float> posicion;
         vector<int> ruta;
@@ -16,7 +17,10 @@ class vehiculo {
         //metodos
         void print();
         void add_ruta(int);
-        void add_peso(int);
+        void add_ruta_faltante(int);
+        void recalcularD(vector<nodo>);
+        void add_l(int);
+        void add_b(int);
         void set_pos(float x, float y);
         void add_dist(float d);
         float dist(nodo uno);

@@ -2,6 +2,8 @@
 #include <sys/stat.h> //mkdir
 #include <bits/stdc++.h> //leer archivos
 #include <vector>
+#include <bits/stdc++.h> //calcular tiempo ejecucion
+#include <chrono>
 
 #include "nodos.hpp"
 #include "vehiculos.hpp"
@@ -9,7 +11,10 @@
 
 using namespace std;
 
-int main(int argc, char *argv[]) { //cambiar a otro archivo que genera una solucion para un archivo.
+int main(int argc, char *argv[]) {
+    auto start = chrono::high_resolution_clock::now();
+    ios_base::sync_with_stdio(false);
+
     int id, t, n;
     float x, y;
     vector<nodo> nodos;             //lista de todos los nodos
@@ -30,20 +35,17 @@ int main(int argc, char *argv[]) { //cambiar a otro archivo que genera una soluc
         nodos.push_back(n);
     }
 
-    int cap, cant;
+    int cant;
     int otro_id;
-    float d;
+    float d, cap;
     file >> cant >> cap;
     //cout << "Cant Vehiculos: " << cant << " Capacidad: " << cap << endl;
     
-    //asignar demanda a cada nodo ¿?¿?¿?¿?
+    //asignar demanda a cada nodo
     for(int i = 1; i < n; ++i) { //id 1 => depot
         file >> otro_id >> d;
-        if (otro_id != 0) {
-            cout << otro_id;
-        }
         nodos.at(i).set_d(d);
-        //cout << nodos.at(i).demanda;
+        //nodos.at(i).print();
     }
 
     file.close();
@@ -60,6 +62,7 @@ int main(int argc, char *argv[]) { //cambiar a otro archivo que genera una soluc
     vector<int> nodos_disp;
     for(int i = 1; i <= n; ++i) {
         nodos_disp.push_back(i);
+        //cout << "i: " << i << endl;
     }
 
     vector<int> nodos_visitados;
@@ -69,42 +72,38 @@ int main(int argc, char *argv[]) { //cambiar a otro archivo que genera una soluc
         bool fin = false;
         bool recorriendo_backhauls = false;
         while (!fin) {                                      //mientras no termine el recorrido
-        float min = 9999999999;
+        double min = 9999999999;
         int numero_nodo_min;
-            for(int i = 0; i < nodos_disp.size(); ++i) {    //recorrer cada nodo
+            for(int i = 0; i < nodos_disp.size(); ++i) {    //recorrer cada nodo buscando el mas cercano
                 float d = vehiculos.at(j).dist(nodos.at(i));
                 //cout << "I: " << i << " J: " << j << " d: " << d << endl;
                 if (d != 0) {
-                    if (vehiculos.at(j).ruta.empty()) { //ruta vacia siosi parte con linehaul
-                        if (nodos.at(i).tipo == 1) {
-                            if(d < min && not_in(nodos_disp.at(i), nodos_visitados)) {
+                    if (d < min && not_in(nodos_disp.at(i), nodos_visitados)) {
+                        if (vehiculos.at(j).ruta.empty()) { //ruta vacia siosi parte con linehaul
+                            if (nodos.at(i).tipo == 1) {
                                 min = d;
                                 numero_nodo_min = nodos_disp.at(i);
                             }
-                        }
-                    } else { //no anotar un linehaul dps de un backhaul
-                        if (nodos.at(i).tipo == 1) {
-                            if (!recorriendo_backhauls) {
-                                if (d < min && not_in(nodos_disp.at(i), nodos_visitados)) {
-                                    min = d;
-                                    numero_nodo_min = nodos_disp.at(i);
+                        } else { //no anotar un linehaul dps de un backhaul
+                            if (nodos.at(i).tipo == 1) {
+                                if (vehiculos.at(j).demandaL + nodos.at(i).demanda <= cap) {
+                                    if (!recorriendo_backhauls) {
+                                        min = d;
+                                        numero_nodo_min = nodos_disp.at(i);      
+                                    }
                                 }
-                            }
-                        } else if (nodos.at(i).tipo == 2) {
-                            if (!recorriendo_backhauls) {
-                                if (d < min && not_in(nodos_disp.at(i), nodos_visitados)) {
-                                    min = d;
-                                    numero_nodo_min = nodos_disp.at(i);
-                                    recorriendo_backhauls = true;
+                            } else if (nodos.at(i).tipo == 2) {
+                                if (vehiculos.at(j).demandaB + nodos.at(i).demanda <= cap) {
+                                    if (!recorriendo_backhauls) {                              
+                                        min = d;
+                                        numero_nodo_min = nodos_disp.at(i);
+                                        recorriendo_backhauls = true;
+                                    } else {
+                                        min = d;
+                                        numero_nodo_min = nodos_disp.at(i);
+                                    }
                                 }
-                            } else {
-                                if (d < min && not_in(nodos_disp.at(i), nodos_visitados)) {
-                                    min = d;
-                                    numero_nodo_min = nodos_disp.at(i);
-                                }
-                            }
-                        } else { //deposito
-                            if (d < min && not_in(nodos_disp.at(i), nodos_visitados)) {
+                            } else { //deposito                        
                                 min = d;
                                 numero_nodo_min = nodos_disp.at(i);
                             }
@@ -119,9 +118,12 @@ int main(int argc, char *argv[]) { //cambiar a otro archivo que genera una soluc
                 if (numero_nodo_min != 1) { //siempre se puede volver al deposito
                     nodos_visitados.push_back(numero_nodo_min);
                 }
-
+                if (nodos.at(numero_nodo_min-1).tipo == 1) { //linehaul
+                    vehiculos.at(j).add_l(nodos.at(numero_nodo_min-1).demanda);
+                } else { //backhaul
+                    vehiculos.at(j).add_b(nodos.at(numero_nodo_min-1).demanda);
+                }
                 vehiculos.at(j).add_ruta(numero_nodo_min);
-                vehiculos.at(j).add_peso(nodos.at(numero_nodo_min-1).demanda);
                 vehiculos.at(j).set_pos(nodos.at(numero_nodo_min-1).coordX, nodos.at(numero_nodo_min-1).coordY);
                 vehiculos.at(j).add_dist(min);
                 //vehiculos.at(j).print();
@@ -132,14 +134,50 @@ int main(int argc, char *argv[]) { //cambiar a otro archivo que genera una soluc
         }
         //vehiculos.at(j).print();
     }
+    //=====agregar los nodos que no se visitaron al primer vehiculo=====
+    vector<int> faltantes = nodos_faltantes(nodos_disp, nodos_visitados);
+    //print
+    //for(int i = 0; i < faltantes.size(); ++i) {
+    //    cout << faltantes.at(i);
+    //}
+
+    for (int i = 1; i < faltantes.size(); i++) { //el deposito siempre falta, pq no se agrega
+        cout << "falta: " << faltantes.at(i) << endl;
+        //nodos.at(faltantes.at(i)-1).print();
+        if (nodos.at(faltantes.at(i)-1).tipo == 1) { //si es linehaul agregar el inicio de la ruta
+            vehiculos.front().ruta.insert(vehiculos.front().ruta.begin(), faltantes.at(i));
+            vehiculos.front().add_l(nodos.at(faltantes.at(i)-1).demanda);
+        } else {
+            vehiculos.front().add_ruta_faltante(faltantes.at(i));
+            vehiculos.front().add_b(nodos.at(faltantes.at(i)-1).demanda);
+        }
+    }
+
+    //vehiculos.front().print();
+    vector<nodo> nodos_para_recalcular;
+    for(int i = 0; i < vehiculos.front().ruta.size(); ++i) {
+        nodos_para_recalcular.push_back(nodos.at(vehiculos.front().ruta.at(i)-1));
+    }
+
+    //print
+    //for(int i = 0; i < nodos_para_recalcular.size(); ++i) {
+    //    nodos_para_recalcular.at(i).print();
+    //}
+
+    vehiculos.front().recalcularD(nodos_para_recalcular);
+    cout << endl;
+    
     //================================================================
 
 
     //========================OUTPUT======================================
+    auto end = chrono::high_resolution_clock::now();
+
     int nClientes = n;
     int nVehiculos = 0;
-    double tiempo = 0.07;
-    float calidad;
+    int calidad = 0;
+    double tiempo = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
+    tiempo *= 1e-9;
 
     for (int i = 0; i < vehiculos.size(); ++i) {
         calidad += vehiculos.at(i).distancia_recorrida;
@@ -151,11 +189,10 @@ int main(int argc, char *argv[]) { //cambiar a otro archivo que genera una soluc
     crear_carpeta();
 
     ofstream out("soluciones/"+nombre_archivo+".out");
-
-    out << calidad << " " << to_string(nClientes) << " " << to_string(nVehiculos) << " " << to_string(tiempo) << "\n";
-    for(int i = 0; i < nVehiculos; ++i) {
+    out << to_string(calidad) << " " << to_string(nClientes) << " " << to_string(nVehiculos) << " " << to_string(tiempo) << "\n";
+    for(int i = 0; i < nVehiculos; ++i) {                       //por cada auto
         out << "1-";
-        for(int j = 0; j < vehiculos.at(i).ruta.size(); ++j) {
+        for(int j = 0; j < vehiculos.at(i).ruta.size(); ++j) {  //por cada id en la ruta
             out << vehiculos.at(i).ruta.at(j);
             if (j+1 != vehiculos.at(i).ruta.size()) {
                 out << "-";
@@ -163,10 +200,11 @@ int main(int argc, char *argv[]) { //cambiar a otro archivo que genera una soluc
                 out << " ";
             }
         }
-        out << vehiculos.at(i).distancia_recorrida << " " << "demandaL" << " " << "demandaB\n";
+        out << vehiculos.at(i).distancia_recorrida << " " << vehiculos.at(i).demandaL << " " << vehiculos.at(i).demandaB << "\n";
     }
 
     out.close();
+    cout << "Archivo " << nombre_archivo << ".out" << " generado\n";
 
     return 0;
 }

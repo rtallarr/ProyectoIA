@@ -10,7 +10,8 @@ using namespace std;
 vehiculo::vehiculo(int i, int c) {
     id = i;
     capacidad = c;
-    peso_actual = 0;
+    demandaL = 0;
+    demandaB = 0;
     distancia_recorrida = 0;
     posicion = {0, 0};
     ruta = {}; //vector de int => id's de nodos
@@ -19,7 +20,8 @@ vehiculo::vehiculo(int i, int c) {
 void vehiculo::print() {
     cout << "Vehiculo " << id << "\n"
     << "  Capacidad: " << capacidad << "\n"
-    << "  Peso Actual: " << peso_actual << "\n"
+    << "  Demanda Linehaul: " << demandaL << "\n"
+    << "  Demanda Backhaul: " << demandaB << "\n"
     << "  Distancia Recorrida: " << distancia_recorrida << "\n"
     << "  Pos: (" << posicion.at(0) << ", " << posicion.at(1) << ")" << "\n"
     << "  Ruta: (";
@@ -33,8 +35,18 @@ void vehiculo::add_ruta(int x) {
     ruta.push_back(x);
 }
 
-void vehiculo::add_peso(int x) {
-    peso_actual += x;
+void vehiculo::add_ruta_faltante(int x) {
+    ruta.pop_back();
+    ruta.push_back(x);
+    ruta.push_back(1);
+}
+
+void vehiculo::add_l(int x) {
+    demandaL += x;
+}
+
+void vehiculo::add_b(int x) {
+    demandaB += x;
 }
 
 void vehiculo::add_dist(float d) {
@@ -49,9 +61,10 @@ void vehiculo::set_pos(float x, float y) {
 }
 
 float vehiculo::dist(nodo uno) {
-    int xs = pow(uno.coordX - posicion.at(0), 2);
-    int ys = pow(uno.coordY - posicion.at(1), 2);
+    double xs = pow(uno.coordX - posicion.at(0), 2);
+    double ys = pow(uno.coordY - posicion.at(1), 2);
     float distancia = sqrt(xs + ys);
+    //cout << "xs: " << xs << " ys " << ys << " d " << distancia << endl;
     return distancia;
 }
 
@@ -76,4 +89,30 @@ bool vehiculo::recorrido_terminado() {
     } else {
         return false;
     }
+}
+
+//auxiliar para recalcular
+double distancia_2nodos(float x1, float y1, float x2, float y2){
+    double xs = pow(x1 - x2, 2);
+    double ys = pow(y1 - y2, 2);
+    double distancia = sqrt(xs + ys);
+    return distancia;
+}
+
+void vehiculo::recalcularD(vector<nodo> nodos) {
+    double d = distancia_2nodos(nodos.at(nodos.size()-1).coordX, nodos.at(nodos.size()-1).coordY, nodos.front().coordX, nodos.front().coordY); 
+    //cout << d;
+    for (int i = 1; i < ruta.size(); ++i) {
+        float x1 = nodos.at(i).coordX;
+        float y1 = nodos.at(i).coordY;
+        float x2 = nodos.at(i-1).coordX;
+        float y2 = nodos.at(i-1).coordY;
+        d += distancia_2nodos(x1, y1, x2, y2);
+        //cout << "x1 " << x1
+        //    << " y1 " << y1
+        //    << " x2 " << x2
+        //    << " y2 " << y2
+        //    << " d: " << d << endl;
+    }
+    distancia_recorrida = d;
 }

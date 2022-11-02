@@ -8,7 +8,7 @@ all: $(NOMBRE)
 
 $(NOMBRE): $(DEPS)
 	$(CC) $(CFLAGS) -o $(NOMBRE) $(DEPS)
-	./proyecto test
+	./proyecto GA1
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $<

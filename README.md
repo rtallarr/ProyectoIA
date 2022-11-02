@@ -1,6 +1,5 @@
 # Proyecto VRPwB
 
-
 ## Instrucciones
 Se requiere de una carpeta de nombre `instancias` con los archivos `.txt` adentro ubicada en el mismo directorio.
 
@@ -26,7 +25,13 @@ Para correr el programa con otra instancia, se pasa como parametro del ejecutabl
 ```
 
 ## Pendientes
-- [ ] Bug pesos y demandas
+#### Greedy
+- [x] Greedy
+- [x] Tiempo de ejecucion
+- [x] Bug pesos y demandas
+- [x] Respetar capacidad
 - [x] Backhauls depues de linehauls
-- [ ] Asegurar pasar por todos los nodos
+- [x] Asegurar pasar por todos los nodos
+- [x] Bug nodo duplicado en agregar nodos faltantes
+#### Tabu Search
 - [ ] Tabu search
