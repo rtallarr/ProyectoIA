@@ -120,7 +120,7 @@ solucion solucion::mejor_vecino(vector<nodo> nodos, vector<int> lista_tabu) {
                                 }
                             }
                             if (!in_list && i!=k) {
-                                //cout << "mejor" << endl;
+                                cout << "mejor" << endl;
                                 mejor = copia;
                                 mejor_calidad = copia.calidad;
                                 mejor.mov = n.id;

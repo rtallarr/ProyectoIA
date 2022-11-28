@@ -1,6 +1,6 @@
 # Proyecto VRPwB
 
-## Instrucciones
+## Instrucciones de uso
 Se requiere de una carpeta de nombre `instancias` con los archivos `.txt` adentro ubicada en el mismo directorio.
 
 ### Comandos Makefile
@@ -8,7 +8,7 @@ Se requiere de una carpeta de nombre `instancias` con los archivos `.txt` adentr
 ```
 make
 ```
-2. Elimina el ejecutable y los archivos archivos intermedios creados en la fase de compilación.
+2. Elimina el ejecutable y los archivos intermedios creados en la fase de compilación.
 ```
 make clean
 ```
@@ -19,7 +19,7 @@ make sol
 
 
 ### Ejecutar con otra instancia
-Para correr el programa con otra instancia, se pasa como parametro del ejecutable. Por ejemplo para ejecutarlo con la instancia en `instancias/GA4.txt`
+Para correr el programa con otra instancia, se pasa como parametro del ejecutable. Por ejemplo, para correrlo con la instancia `instancias/GA4.txt`
 ```
 ./proyecto GA4
 ```
