@@ -33,5 +33,10 @@ Para correr el programa con otra instancia, se pasa como parametro del ejecutabl
 - [x] Backhauls depues de linehauls
 - [x] Asegurar pasar por todos los nodos
 - [x] Bug nodo duplicado en agregar nodos faltantes
+- [ ] Respetar capacidad anexado de nodos faltantes
 #### Tabu Search
-- [ ] Tabu search
+- [x] Bug insert despues del deposito
+- [x] Usar lista tabu
+- [x] Bug ruta 1-1
+- [ ] Capacidades
+- [ ] Bug distancias

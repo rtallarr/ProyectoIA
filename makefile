@@ -2,13 +2,13 @@ CC = g++
 CFLAGS = -Wall -g
 RM = rm -f
 NOMBRE = proyecto
-DEPS = main.o nodos.o vehiculos.o
+DEPS = main.o nodos.o vehiculos.o soluciones.o
 
 all: $(NOMBRE)
 
 $(NOMBRE): $(DEPS)
 	$(CC) $(CFLAGS) -o $(NOMBRE) $(DEPS)
-	./proyecto GA1
+	./proyecto test
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $<

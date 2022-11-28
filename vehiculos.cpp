@@ -68,21 +68,6 @@ float vehiculo::dist(nodo uno) {
     return distancia;
 }
 
-//bool vehiculo::recorrido_terminado() {
-//    if (ruta.empty()) {
-//        //cout << "FALSE";
-//        return false;
-//    } else {
-//        if (ruta.at(ruta.size() - 1) == 1) {
-//            //cout << "TRUE";
-//            return true;
-//        } else {
-//            //cout << "FALSE";
-//            return false;
-//        }
-//    }
-//}
-
 bool vehiculo::recorrido_terminado() {
     if (ruta.at(ruta.size() - 1) == 1 || ruta.empty()) {
         return true;
@@ -100,19 +85,22 @@ double distancia_2nodos(float x1, float y1, float x2, float y2){
 }
 
 void vehiculo::recalcularD(vector<nodo> nodos) {
-    double d = distancia_2nodos(nodos.at(nodos.size()-1).coordX, nodos.at(nodos.size()-1).coordY, nodos.front().coordX, nodos.front().coordY); 
-    //cout << d;
-    for (int i = 1; i < ruta.size(); ++i) {
-        float x1 = nodos.at(i).coordX;
-        float y1 = nodos.at(i).coordY;
-        float x2 = nodos.at(i-1).coordX;
-        float y2 = nodos.at(i-1).coordY;
-        d += distancia_2nodos(x1, y1, x2, y2);
-        //cout << "x1 " << x1
-        //    << " y1 " << y1
-        //    << " x2 " << x2
-        //    << " y2 " << y2
-        //    << " d: " << d << endl;
+    if (!nodos.empty()) {
+        //el 1 no viene, se calcula como el primero y el ultimo
+        double d = distancia_2nodos(nodos.at(nodos.size()-1).coordX, nodos.at(nodos.size()-1).coordY, nodos.front().coordX, nodos.front().coordY); 
+        //cout << d;
+        for (int i = 1; i < ruta.size(); ++i) {
+            float x1 = nodos.at(i).coordX;
+            float y1 = nodos.at(i).coordY;
+            float x2 = nodos.at(i-1).coordX;
+            float y2 = nodos.at(i-1).coordY;
+            d += distancia_2nodos(x1, y1, x2, y2);
+            //cout << "x1 " << x1
+            //    << " y1 " << y1
+            //    << " x2 " << x2
+            //    << " y2 " << y2
+            //    << " d: " << d << endl;
+        }
+        distancia_recorrida = d;
     }
-    distancia_recorrida = d;
 }

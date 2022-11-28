@@ -30,8 +30,9 @@ vector<int> nodos_faltantes(vector<int> nodos, vector<int> v) {
             faltantes.push_back(nodos.at(i));
         }
     }
-    for (int i = 0; i < faltantes.size(); ++i) {
-        cout << faltantes.at(i);
-    }
+    //print
+    //for (int i = 0; i < faltantes.size(); ++i) {
+    //    cout << faltantes.at(i);
+    //}
     return faltantes;
 }

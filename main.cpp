@@ -8,6 +8,7 @@
 #include "nodos.hpp"
 #include "vehiculos.hpp"
 #include "func.hpp"
+#include "soluciones.hpp"
 
 using namespace std;
 
@@ -142,7 +143,7 @@ int main(int argc, char *argv[]) {
     //}
 
     for (int i = 1; i < faltantes.size(); i++) { //el deposito siempre falta, pq no se agrega
-        cout << "falta: " << faltantes.at(i) << endl;
+        //cout << "falta: " << faltantes.at(i) << endl;
         //nodos.at(faltantes.at(i)-1).print();
         if (nodos.at(faltantes.at(i)-1).tipo == 1) { //si es linehaul agregar el inicio de la ruta
             vehiculos.front().ruta.insert(vehiculos.front().ruta.begin(), faltantes.at(i));
@@ -159,29 +160,78 @@ int main(int argc, char *argv[]) {
         nodos_para_recalcular.push_back(nodos.at(vehiculos.front().ruta.at(i)-1));
     }
 
-    //print
+    //print nodos para recalcular
     //for(int i = 0; i < nodos_para_recalcular.size(); ++i) {
     //    nodos_para_recalcular.at(i).print();
     //}
 
     vehiculos.front().recalcularD(nodos_para_recalcular);
     cout << endl;
+
+    //printeo de autos
+    //for (int i = 0; i < cant; i++) {
+    //    vehiculos.at(i).print();
+    //}
     
-    //================================================================
+    
+    //=========================TABU SEARCH=======================================
+    int calidad = 0;
+    int largo_lista = 3;
+    int numero_iteraciones = 5;
+    vector<int> lista_tabu = {};
+    
+    for (int i = 0; i < vehiculos.size(); ++i) {
+        calidad += vehiculos.at(i).distancia_recorrida;
+    }
+
+    solucion mejor_solucion = solucion(calidad, vehiculos);
+    solucion solucion_actual = solucion(calidad, vehiculos); // al inicio mejor solucion = actual
+
+    cout << "Iteracion 1: \n";
+    solucion_actual.print();
+    cout << endl;
+
+    for (int i = 0; i < numero_iteraciones; ++i) {
+        solucion_actual = solucion_actual.mejor_vecino(nodos, lista_tabu);
+        lista_tabu.push_back(solucion_actual.mov);
+        //cout << "mejor vecino - mov: " << solucion_actual.mov << endl;
+
+        //* eliminar elemento mas antiguo
+        if (lista_tabu.size() > largo_lista) {
+            lista_tabu.erase(lista_tabu.begin()); 
+        }
+        
+        if (solucion_actual.calidad < mejor_solucion.calidad) {
+            //cout << "actual: " << solucion_actual.calidad << " mejor: " << mejor_solucion.calidad << endl;
+            mejor_solucion = solucion_actual;
+        }
+
+        //* prints
+        cout << "Iteracion " << i+2 << ":\n";
+        //cout << "    main calidad actual: " << solucion_actual.calidad << endl;
+        solucion_actual.print();
+        cout << "   Lista tabu:";
+        for (int j = 0; j < lista_tabu.size(); ++j) {
+            cout << " " << lista_tabu.at(j);
+        }
+        cout << "\n" << endl;
+    }
+
+    cout << "\nMejor solucion final: ";
+    mejor_solucion.print();
+
 
 
     //========================OUTPUT======================================
     auto end = chrono::high_resolution_clock::now();
-
-    int nClientes = n;
-    int nVehiculos = 0;
-    int calidad = 0;
     double tiempo = chrono::duration_cast<chrono::nanoseconds>(end - start).count();
     tiempo *= 1e-9;
 
-    for (int i = 0; i < vehiculos.size(); ++i) {
-        calidad += vehiculos.at(i).distancia_recorrida;
-        if (vehiculos.at(i).distancia_recorrida != 0) {
+    int nClientes = n;
+    int nVehiculos = 0;
+
+    for (int i = 0; i < mejor_solucion.autos.size(); ++i) {
+        if (!mejor_solucion.autos.at(i).ruta.empty()) {
             nVehiculos += 1;
         }
     }
@@ -189,12 +239,12 @@ int main(int argc, char *argv[]) {
     crear_carpeta();
 
     ofstream out("soluciones/"+nombre_archivo+".out");
-    out << to_string(calidad) << " " << to_string(nClientes) << " " << to_string(nVehiculos) << " " << to_string(tiempo) << "\n";
-    for(int i = 0; i < nVehiculos; ++i) {                       //por cada auto
+    out << to_string(mejor_solucion.calidad) << " " << to_string(nClientes) << " " << to_string(nVehiculos) << " " << to_string(tiempo) << "\n";
+    for(int i = 0; i < mejor_solucion.autos.size(); ++i) {      //por cada auto
         out << "1-";
-        for(int j = 0; j < vehiculos.at(i).ruta.size(); ++j) {  //por cada id en la ruta
-            out << vehiculos.at(i).ruta.at(j);
-            if (j+1 != vehiculos.at(i).ruta.size()) {
+        for(int j = 0; j < mejor_solucion.autos.at(i).ruta.size(); ++j) {  //por cada id en la ruta
+            out << mejor_solucion.autos.at(i).ruta.at(j);
+            if (j+1 != mejor_solucion.autos.at(i).ruta.size()) {
                 out << "-";
             } else {
                 out << " ";
@@ -204,7 +254,7 @@ int main(int argc, char *argv[]) {
     }
 
     out.close();
-    cout << "Archivo " << nombre_archivo << ".out" << " generado\n";
+    cout << "\nArchivo " << nombre_archivo << ".out" << " generado\n";
 
     return 0;
 }
