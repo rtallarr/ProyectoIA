@@ -5,7 +5,7 @@
 #include "vehiculos.hpp"
 #include "soluciones.hpp"
 
-solucion::solucion(float c, vector<vehiculo> v) {
+solucion::solucion(double c, vector<vehiculo> v) {
     calidad = c;
     autos = v;
     mov = -1;
@@ -28,7 +28,7 @@ void solucion::print(bool factible) {
 }
 
 solucion solucion::mejor_vecino(vector<nodo> nodos, vector<int> lista_tabu) {
-    int mejor_calidad = 99999999;
+    double mejor_calidad = 9999999.9;
     solucion mejor(calidad, autos);
     for (int i = 0; i < autos.size(); ++i) {                     //para cada auto (ruta)
         if (!autos.at(i).ruta.empty()) {
@@ -98,9 +98,10 @@ solucion solucion::mejor_vecino(vector<nodo> nodos, vector<int> lista_tabu) {
                     copia.autos.at(k).recalcularD(nodos_para_recalcular2);
 
                     //* calcular la nueva calidad de la solucion
-                    int cal = 0;
+                    double cal = 0;
                     for (int l = 0; l < copia.autos.size(); ++l) {
                         cal += copia.autos.at(l).distancia_recorrida;
+                        //cout << "cal: " << cal << endl;
                     }
                     copia.calidad = cal;
 

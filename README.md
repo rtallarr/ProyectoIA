@@ -25,6 +25,7 @@ Para correr el programa con otra instancia, se pasa como parametro del ejecutabl
 ```
 
 ## Pendientes
+Distancias finales para ciertas instancias mejor que el optimo (?)
 #### Greedy
 - [x] Greedy
 - [x] Tiempo de ejecucion

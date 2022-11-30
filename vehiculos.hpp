@@ -8,7 +8,7 @@ class vehiculo {
         int capacidad;
         int demandaL;
         int demandaB;
-        float distancia_recorrida;
+        double distancia_recorrida;
         vector<float> posicion;
         vector<int> ruta;
 
@@ -24,8 +24,8 @@ class vehiculo {
         void rem_l(int);
         void rem_b(int);
         void set_pos(float x, float y);
-        void add_dist(float d);
-        float dist(nodo uno);
+        void add_dist(double d);
+        double dist(nodo uno);
         bool recorrido_terminado();
         bool recorriendo_backhauls();
 };

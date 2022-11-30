@@ -4,11 +4,11 @@ using namespace std;
 
 class solucion {
     public:
-        float calidad;
+        double calidad;
         vector<vehiculo> autos;
         int mov;
 
-        solucion(float, vector<vehiculo>); //constructor
+        solucion(double, vector<vehiculo>); //constructor
 
         //metodos
         void print(bool = true);

@@ -73,10 +73,10 @@ int main(int argc, char *argv[]) {
         bool fin = false;
         bool recorriendo_backhauls = false;
         while (!fin) {                                      //mientras no termine el recorrido
-        double min = 9999999999;
+        double min = 9999999999.9;
         int numero_nodo_min;
             for(int i = 0; i < nodos_disp.size(); ++i) {    //recorrer cada nodo buscando el mas cercano
-                float d = vehiculos.at(j).dist(nodos.at(i));
+                double d = vehiculos.at(j).dist(nodos.at(i));
                 //cout << "I: " << i << " J: " << j << " d: " << d << endl;
                 if (d != 0) {
                     if (d < min && not_in(nodos_disp.at(i), nodos_visitados)) {
@@ -183,7 +183,7 @@ int main(int argc, char *argv[]) {
     
     
     //=========================TABU SEARCH=======================================
-    int calidad = 0;
+    double calidad = 0;
     int largo_lista = nodos.size()/7;
     //cout << "largo list: " << largo_lista << endl;
     int numero_iteraciones = 250;
@@ -196,7 +196,7 @@ int main(int argc, char *argv[]) {
     solucion mejor_solucion = solucion(calidad, vehiculos);
     solucion solucion_actual = solucion(calidad, vehiculos); // al inicio mejor solucion = actual
 
-    cout << "Iteracion 1 (greedy): \n";
+    cout << "Iteracion 0 (greedy): \n";
     solucion_actual.print();
     cout << endl;
 
@@ -216,14 +216,14 @@ int main(int argc, char *argv[]) {
         }
 
         //* prints
-        cout << "Iteracion " << i+2 << ":\n";
+        cout << "Iteracion " << i+1 << ":\n";
         cout << "  main calidad actual: " << solucion_actual.calidad << endl;
-        solucion_actual.print();
-        cout << "   Lista tabu:";
-        for (int j = 0; j < lista_tabu.size(); ++j) {
-            cout << " " << lista_tabu.at(j);
-        }
-        cout << "\n" << endl;
+        //solucion_actual.print();
+        //cout << "   Lista tabu:";
+        //for (int j = 0; j < lista_tabu.size(); ++j) {
+        //    cout << " " << lista_tabu.at(j);
+        //}
+        //cout << "\n" << endl;
     }
 
     cout << "\nMejor solucion final: ";

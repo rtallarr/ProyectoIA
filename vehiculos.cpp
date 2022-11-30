@@ -57,7 +57,7 @@ void vehiculo::rem_b(int x) {
     demandaB -= x;
 }
 
-void vehiculo::add_dist(float d) {
+void vehiculo::add_dist(double d) {
     distancia_recorrida += d;
 }
 
@@ -68,10 +68,10 @@ void vehiculo::set_pos(float x, float y) {
     posicion = p;
 }
 
-float vehiculo::dist(nodo uno) {
+double vehiculo::dist(nodo uno) {
     double xs = pow(uno.coordX - posicion.at(0), 2);
     double ys = pow(uno.coordY - posicion.at(1), 2);
-    float distancia = sqrt(xs + ys);
+    double distancia = sqrt(xs + ys);
     //cout << "xs: " << xs << " ys " << ys << " d " << distancia << endl;
     return distancia;
 }
