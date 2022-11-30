@@ -45,8 +45,16 @@ void vehiculo::add_l(int x) {
     demandaL += x;
 }
 
+void vehiculo::rem_l(int x) {
+    demandaL -= x;
+}
+
 void vehiculo::add_b(int x) {
     demandaB += x;
+}
+
+void vehiculo::rem_b(int x) {
+    demandaB -= x;
 }
 
 void vehiculo::add_dist(float d) {
@@ -88,7 +96,7 @@ void vehiculo::recalcularD(vector<nodo> nodos) {
     if (!nodos.empty()) {
         //el 1 no viene, se calcula como el primero y el ultimo
         double d = distancia_2nodos(nodos.at(nodos.size()-1).coordX, nodos.at(nodos.size()-1).coordY, nodos.front().coordX, nodos.front().coordY); 
-        //cout << d;
+        //cout << "d: " << d << endl;
         for (int i = 1; i < ruta.size(); ++i) {
             float x1 = nodos.at(i).coordX;
             float y1 = nodos.at(i).coordY;

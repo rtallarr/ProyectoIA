@@ -145,12 +145,20 @@ int main(int argc, char *argv[]) {
     for (int i = 1; i < faltantes.size(); i++) { //el deposito siempre falta, pq no se agrega
         //cout << "falta: " << faltantes.at(i) << endl;
         //nodos.at(faltantes.at(i)-1).print();
-        if (nodos.at(faltantes.at(i)-1).tipo == 1) { //si es linehaul agregar el inicio de la ruta
-            vehiculos.front().ruta.insert(vehiculos.front().ruta.begin(), faltantes.at(i));
-            vehiculos.front().add_l(nodos.at(faltantes.at(i)-1).demanda);
-        } else {
-            vehiculos.front().add_ruta_faltante(faltantes.at(i));
-            vehiculos.front().add_b(nodos.at(faltantes.at(i)-1).demanda);
+        for (int j = 0; j < vehiculos.size(); ++j) {
+            if (nodos.at(faltantes.at(i)-1).tipo == 1) { //si es linehaul agregar el inicio de la ruta
+                if (vehiculos.at(j).demandaL + nodos.at(faltantes.at(i)-1).demanda <= cap) {
+                    vehiculos.at(j).ruta.insert(vehiculos.at(j).ruta.begin(), faltantes.at(i));
+                    vehiculos.at(j).add_l(nodos.at(faltantes.at(i)-1).demanda);
+                    break;
+                }
+            } else {
+                if (vehiculos.at(j).demandaB + nodos.at(faltantes.at(i)-1).demanda <= cap) {
+                    vehiculos.at(j).add_ruta_faltante(faltantes.at(i));
+                    vehiculos.at(j).add_b(nodos.at(faltantes.at(i)-1).demanda);
+                    break;
+                }
+            }
         }
     }
 
@@ -176,8 +184,9 @@ int main(int argc, char *argv[]) {
     
     //=========================TABU SEARCH=======================================
     int calidad = 0;
-    int largo_lista = 3;
-    int numero_iteraciones = 5;
+    int largo_lista = nodos.size()/7;
+    //cout << "largo list: " << largo_lista << endl;
+    int numero_iteraciones = 250;
     vector<int> lista_tabu = {};
     
     for (int i = 0; i < vehiculos.size(); ++i) {
@@ -187,7 +196,7 @@ int main(int argc, char *argv[]) {
     solucion mejor_solucion = solucion(calidad, vehiculos);
     solucion solucion_actual = solucion(calidad, vehiculos); // al inicio mejor solucion = actual
 
-    cout << "Iteracion 1: \n";
+    cout << "Iteracion 1 (greedy): \n";
     solucion_actual.print();
     cout << endl;
 
@@ -208,7 +217,7 @@ int main(int argc, char *argv[]) {
 
         //* prints
         cout << "Iteracion " << i+2 << ":\n";
-        //cout << "    main calidad actual: " << solucion_actual.calidad << endl;
+        cout << "  main calidad actual: " << solucion_actual.calidad << endl;
         solucion_actual.print();
         cout << "   Lista tabu:";
         for (int j = 0; j < lista_tabu.size(); ++j) {
@@ -239,8 +248,8 @@ int main(int argc, char *argv[]) {
     crear_carpeta();
 
     ofstream out("soluciones/"+nombre_archivo+".out");
-    out << to_string(mejor_solucion.calidad) << " " << to_string(nClientes) << " " << to_string(nVehiculos) << " " << to_string(tiempo) << "\n";
-    for(int i = 0; i < mejor_solucion.autos.size(); ++i) {      //por cada auto
+    out << to_string((int)mejor_solucion.calidad) << " " << to_string(nClientes) << " " << to_string(nVehiculos) << " " << to_string(tiempo) << "\n";
+    for(int i = 0; i < nVehiculos; ++i) {      //por cada auto
         out << "1-";
         for(int j = 0; j < mejor_solucion.autos.at(i).ruta.size(); ++j) {  //por cada id en la ruta
             out << mejor_solucion.autos.at(i).ruta.at(j);
@@ -250,7 +259,7 @@ int main(int argc, char *argv[]) {
                 out << " ";
             }
         }
-        out << vehiculos.at(i).distancia_recorrida << " " << vehiculos.at(i).demandaL << " " << vehiculos.at(i).demandaB << "\n";
+        out << mejor_solucion.autos.at(i).distancia_recorrida << " " << mejor_solucion.autos.at(i).demandaL << " " << mejor_solucion.autos.at(i).demandaB << "\n";
     }
 
     out.close();

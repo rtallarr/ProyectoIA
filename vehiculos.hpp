@@ -21,6 +21,8 @@ class vehiculo {
         void recalcularD(vector<nodo>);
         void add_l(int);
         void add_b(int);
+        void rem_l(int);
+        void rem_b(int);
         void set_pos(float x, float y);
         void add_dist(float d);
         float dist(nodo uno);

@@ -43,6 +43,8 @@ solucion solucion::mejor_vecino(vector<nodo> nodos, vector<int> lista_tabu) {
                     if (n.tipo == 1) {          //nodo a mover es linehaul
                         //cout << "linehaul" << endl; 
                         copia.autos.at(k).ruta.insert(copia.autos.at(k).ruta.begin(), n.id);
+                        copia.autos.at(i).rem_l(n.demanda); //sacar de la ruta anterior la demanda
+                        copia.autos.at(k).add_l(n.demanda); //y agregar a la actual
                     } else if (n.tipo == 2) {   //nodo a mover es backhaul
                         //cout << "backhaul" << endl;
                         if (!copia.autos.at(k).ruta.empty()) {
@@ -52,6 +54,8 @@ solucion solucion::mejor_vecino(vector<nodo> nodos, vector<int> lista_tabu) {
                         } else {
                             copia.autos.at(k).ruta.push_back(n.id);
                         }
+                        copia.autos.at(i).rem_b(n.demanda); //sacar de la ruta anterior la demanda
+                        copia.autos.at(k).add_b(n.demanda); //y agregar a la actual
                     }
 
                     vector<int> bug = {1};
@@ -110,8 +114,9 @@ solucion solucion::mejor_vecino(vector<nodo> nodos, vector<int> lista_tabu) {
                         }
                     }
 
-                    //Usar lista tabu
+                    //* Usar lista tabu | check cap | check factibilidad 
                     bool in_list = false;
+                    bool cap = true; //capacidad respetada
                     if (copia.calidad < mejor_calidad && !solo_backhauls) {
                         if (copia.calidad != calidad) {
                             for (int m = 0; m < lista_tabu.size(); ++m) {
@@ -119,8 +124,15 @@ solucion solucion::mejor_vecino(vector<nodo> nodos, vector<int> lista_tabu) {
                                     in_list = true;
                                 }
                             }
-                            if (!in_list && i!=k) {
-                                cout << "mejor" << endl;
+                            for (int m = 0; m < copia.autos.size(); ++m) {
+                                if (copia.autos.at(m).demandaL > copia.autos.at(m).capacidad) {
+                                    cap = false;
+                                } else if (copia.autos.at(m).demandaB > copia.autos.at(m).capacidad) {
+                                    cap = false;
+                                }
+                            }
+                            if (!in_list && i!=k && cap) {
+                                //cout << "mejor" << endl;
                                 mejor = copia;
                                 mejor_calidad = copia.calidad;
                                 mejor.mov = n.id;
@@ -134,7 +146,7 @@ solucion solucion::mejor_vecino(vector<nodo> nodos, vector<int> lista_tabu) {
                     }
 
                     //* solucion generada por cada iteracion
-                    copia.print(!solo_backhauls);
+                    //copia.print(!solo_backhauls);
                 }
             }
         }
